@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -34,8 +33,6 @@ func TestGetCidadeByCep_Sucesso(t *testing.T) {
 			t.Fatalf("esperava err nil, mas recebeu o erro: %v", resposta.Err)
 		}
 
-		fmt.Printf("Imprimindo a respota %s", resposta)
-		fmt.Printf("imprimindo a cidade %s\n", resposta.Cidade)
 		if resposta.Cidade != "Hortolândia" {
 			t.Errorf("esperava cidade 'Hortolândia', recebeu: %s", resposta.Cidade)
 		}
