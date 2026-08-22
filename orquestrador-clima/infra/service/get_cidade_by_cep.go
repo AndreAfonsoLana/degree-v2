@@ -14,6 +14,9 @@ type CEPClient struct {
 	baseURL    string
 	httpClient *http.Client
 }
+
+// GetCidadeByCEP implements [usecase.CEPProvedor].
+
 type CidadeResult struct {
 	Cidade string
 	Err    error
@@ -27,12 +30,13 @@ func NewCidadeService(baseURL string) *CEPClient {
 		},
 	}
 }
-func (v *CEPClient) GetCidadeByCep(cep string) <-chan CidadeResult {
+
+func (v *CEPClient) GetCidadeByCep(contexto context.Context, cep string) <-chan CidadeResult {
 	// Declarar o canal para receber o resultado
 	channelResultado := make(chan CidadeResult, 1)
 
 	go func() {
-		contexto, cancelar := context.WithTimeout(context.Background(), 10*time.Second)
+		ctxTimeout, cancelar := context.WithTimeout(contexto, 10*time.Second)
 		defer cancelar() // Fechar contexto após uso
 		defer close(channelResultado)
 
@@ -42,8 +46,8 @@ func (v *CEPClient) GetCidadeByCep(cep string) <-chan CidadeResult {
 		}
 
 		url := fmt.Sprintf("%s/ws/%s/json/", base, cep)
-		//fmt.Printf(" Verificando a URL no console %s\n", url)
-		requisicao, erro := http.NewRequestWithContext(contexto, http.MethodGet, url, nil)
+
+		requisicao, erro := http.NewRequestWithContext(ctxTimeout, http.MethodGet, url, nil)
 
 		if erro != nil {
 			channelResultado <- CidadeResult{Err: erro}

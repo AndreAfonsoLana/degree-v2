@@ -1,0 +1,26 @@
+### Variáveis globais do arquivo
+@host = http://localhost
+@host_production = http://orquestrador-clima
+@port = 8081
+@baseUrl = {{host}}:{{port}}
+@baseUrl_production = {{host_production}}:{{port}}
+
+### 1. Sucesso: Testando com o CEP de Hortolândia
+GET {{baseUrl}}/temperatura?cep=13082210
+Accept: application/json
+
+### 2. Sucesso: Testando com o CEP de Campinas
+GET {{baseUrl}}/temperatura?cep=13015904
+Accept: application/json
+
+### 3. Erro: CEP com formato inválido (menos de 8 dígitos)
+GET {{baseUrl}}/temperatura?cep=123
+Accept: application/json
+
+### 4. Erro: Rota sem passar o parâmetro CEP
+GET {{baseUrl}}/temperatura
+Accept: application/json
+
+### 6. Erro: CEP com formato inválido (menos de 8 dígitos)
+GET {{baseUrl_production}}/temperatura?cep=13183310
+
