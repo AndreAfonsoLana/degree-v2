@@ -7,6 +7,7 @@ import (
 
 	"github.com/AndreAfonsoLana/go-degree-orquestrador-clima/internal/usecase"
 	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/propagation"
 )
 
 type TemperaturaHandler struct {
@@ -21,7 +22,8 @@ func NewTemperaturaHandler(uc *usecase.ConsultaClimaUseCase) *TemperaturaHandler
 
 func (h *TemperaturaHandler) HandleTemperatura(w http.ResponseWriter, r *http.Request) {
 	tracer := otel.Tracer("orquestrador-clima")
-	ctx, span := tracer.Start(r.Context(), "buscar-clima")
+	ctx := otel.GetTextMapPropagator().Extract(r.Context(), propagation.HeaderCarrier(r.Header))
+	ctx, span := tracer.Start(ctx, "nome-do-span-recebido-teste")
 	defer span.End()
 
 	w.Header().Set("Content-Type", "application/json")

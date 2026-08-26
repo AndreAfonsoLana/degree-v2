@@ -15,6 +15,14 @@ O sistema é composto por dois microsserviços principais que se comunicam entre
 - **Tracing / UI:** Zipkin
 - **Infraestrutura:** Docker & Docker Compose
 
+## 🔍 Painel de Observabilidade e Logs (Zipkin)
+
+Com os containers em execução, você pode acessar a interface web do Zipkin para inspecionar os rastreios distribuídos (*traces*) e validar se a comunicação entre o Serviço A e o Serviço B está perfeitamente unificada:
+
+- **URL do Zipkin (OTEL Traces):** [http://localhost:9411](http://localhost:9411)
+
+Na interface, clique em **"Run Query"** para listar os rastreios realizados e visualizar a linha do tempo completa das requisições.
+
 ## 🚀 Como executar o projeto
 
 ### Pré-requisitos

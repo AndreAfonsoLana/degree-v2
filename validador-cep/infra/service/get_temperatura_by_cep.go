@@ -37,16 +37,16 @@ func (t *CEPClient) GetTemperaturaByCep(ctx context.Context, cep string) <-chan 
 	channelResultado := make(chan TemperaturaResult, 1)
 
 	go func() {
-		ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+		//ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
+		reqCtx, cancel := context.WithTimeout(ctx, 20*time.Second)
+
 		defer cancel() // Garante que o contexto será cancelado após o uso
 		defer close(channelResultado)
 
-		//url := t.baseURL
 		url := fmt.Sprintf("%s/temperatura?cep=%s", t.baseURL, cep)
 		fmt.Printf(" URL SEND REQUEST %s\n", url)
 
-		requisicao, erro := http.NewRequestWithContext(ctx, http.MethodGet, url, nil)
-		// Forma o request acima
+		requisicao, erro := http.NewRequestWithContext(reqCtx, http.MethodGet, url, nil)
 
 		if erro != nil {
 			channelResultado <- TemperaturaResult{Err: erro}
