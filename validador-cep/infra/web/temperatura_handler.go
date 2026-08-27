@@ -34,7 +34,13 @@ func (h *TemperaturaHandler) HandleTemperatura(w http.ResponseWriter, r *http.Re
 	var input dto.GetTemperaturaInputDTIO
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
-		w.WriteHeader(http.StatusUnprocessableEntity) // 422 para JSON malformado
+		w.WriteHeader(http.StatusUnprocessableEntity)
+		json.NewEncoder(w).Encode(map[string]string{"message": "invalid JSON"})
+		return
+	}
+
+	if len(input.CEP) != 8 {
+		w.WriteHeader(http.StatusUnprocessableEntity)
 		json.NewEncoder(w).Encode(map[string]string{"message": "invalid JSON"})
 		return
 	}
@@ -42,7 +48,7 @@ func (h *TemperaturaHandler) HandleTemperatura(w http.ResponseWriter, r *http.Re
 	output, err := h.UseCase.GetTemperaturaUseCase(ctx, input.CEP)
 
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusNotFound)
+		http.Error(w, err.Error(), http.StatusUnprocessableEntity)
 	}
 
 	w.WriteHeader(http.StatusOK)
