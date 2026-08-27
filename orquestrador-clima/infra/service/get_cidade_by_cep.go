@@ -8,14 +8,13 @@ import (
 	"time"
 
 	"github.com/AndreAfonsoLana/go-degree-orquestrador-clima/infra/service/dto"
+	"go.opentelemetry.io/otel"
 )
 
 type CEPClient struct {
 	baseURL    string
 	httpClient *http.Client
 }
-
-// GetCidadeByCEP implements [usecase.CEPProvedor].
 
 type CidadeResult struct {
 	Cidade string
@@ -32,8 +31,12 @@ func NewCidadeService(baseURL string) *CEPClient {
 }
 
 func (v *CEPClient) GetCidadeByCep(contexto context.Context, cep string) <-chan CidadeResult {
-	// Declarar o canal para receber o resultado
 	channelResultado := make(chan CidadeResult, 1)
+
+	tr := otel.Tracer("orquestrador-clima-usecase")
+	contexto, span := tr.Start(contexto, "GetCidadeByCep")
+
+	defer span.End()
 
 	go func() {
 		ctxTimeout, cancelar := context.WithTimeout(contexto, 10*time.Second)

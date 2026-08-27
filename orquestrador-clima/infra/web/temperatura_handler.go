@@ -23,7 +23,8 @@ func NewTemperaturaHandler(uc *usecase.ConsultaClimaUseCase) *TemperaturaHandler
 func (h *TemperaturaHandler) HandleTemperatura(w http.ResponseWriter, r *http.Request) {
 	tracer := otel.Tracer("orquestrador-clima")
 	ctx := otel.GetTextMapPropagator().Extract(r.Context(), propagation.HeaderCarrier(r.Header))
-	ctx, span := tracer.Start(ctx, "nome-do-span-recebido-teste")
+	ctx, span := tracer.Start(ctx, "HandleTemperatura")
+
 	defer span.End()
 
 	w.Header().Set("Content-Type", "application/json")

@@ -1,14 +1,19 @@
-FROM golang:1.25.0 AS builder
+# Estágio de Build
+FROM golang:1.25-alpine AS builder
+
 WORKDIR /app
-COPY . .
+
+COPY go.mod go.sum ./
 RUN go mod download
 
-# 🎯 Ajuste exato baseado na sua estrutura de pastas (cmd/server)
-RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/server/main.go
+COPY . .
 
-# Estágio 2: Execução
+RUN CGO_ENABLED=0 GOOS=linux go build -o server ./cmd/server
+
 FROM alpine:latest
+
 WORKDIR /root/
-COPY --from=builder /app/server .
-EXPOSE 8080
-CMD ["./server"]
+
+COPY --from=builder /app/server ./server
+
+ENTRYPOINT ["./server"]

@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 	"errors"
-	"fmt"
 
 	"github.com/AndreAfonsoLana/go-degree-orquestrador-clima/infra/service"
 	"github.com/AndreAfonsoLana/go-degree-orquestrador-clima/internal/usecase/dto"
@@ -35,8 +34,8 @@ func NewConsultaClimaUseCase(
 }
 
 func (c *ConsultaClimaUseCase) ConsultarClimaPorCEP(ctx context.Context, cep string) (dto.GetTemperaturaOutputDTO, error) {
-	tr := otel.Tracer("orquestrador-clima-usecase")
-	ctx, span := tr.Start(ctx, "ConsultarClimaPorCEP-Execution")
+	tr := otel.Tracer("orquestrador-clima-service")
+	ctx, span := tr.Start(ctx, "ConsultarClimaPorCEP")
 	defer span.End()
 
 	if len(cep) != 8 {
@@ -48,10 +47,8 @@ func (c *ConsultaClimaUseCase) ConsultarClimaPorCEP(ctx context.Context, cep str
 		return dto.GetTemperaturaOutputDTO{}, errors.New(cidadeResult.Err.Error())
 	}
 
-	// 👇 MUDANÇA 2: Passamos o 'ctx' aqui na hora de chamar a função
 	temperaturas := <-c.temperaturaProvedor.GetTemperaturaByCidade(ctx, cidadeResult.Cidade)
 
-	fmt.Printf("<-> Temperaturas: %+v\n", temperaturas)
 	return dto.GetTemperaturaOutputDTO{
 		Cidade: cidadeResult.Cidade,
 		TempC:  temperaturas.Temp_c,
