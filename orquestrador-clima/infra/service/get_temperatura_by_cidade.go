@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"time"
 
+	"net/url"
+
 	"github.com/AndreAfonsoLana/go-degree-orquestrador-clima/infra/service/dto"
 	"github.com/AndreAfonsoLana/go-degree-orquestrador-clima/utils"
 	"go.opentelemetry.io/otel"
@@ -51,7 +53,9 @@ func (c *CidadeClinte) GetTemperaturaByCidade(ctx context.Context, cidade string
 			base = "https://api.weatherapi.com"
 		}
 
-		endpoint := fmt.Sprintf("%s/v1/current.json?key=%s&q=%s", c.baseUrl, c.apiKey, cidadeFormata)
+		cidadeEscapada := url.QueryEscape(cidadeFormata)
+
+		endpoint := fmt.Sprintf("%s/v1/current.json?key=%s&q=%s", c.baseUrl, c.apiKey, cidadeEscapada)
 
 		requisicao, erro := http.NewRequestWithContext(contexto, http.MethodGet, endpoint, nil)
 

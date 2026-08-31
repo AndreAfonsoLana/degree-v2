@@ -41,11 +41,15 @@ func (h *TemperaturaHandler) HandleTemperatura(w http.ResponseWriter, r *http.Re
 
 	if len(input.CEP) != 8 {
 		w.WriteHeader(http.StatusUnprocessableEntity)
-		json.NewEncoder(w).Encode(map[string]string{"message": "invalid JSON"})
 		return
 	}
 
 	output, err := h.UseCase.GetTemperaturaUseCase(ctx, input.CEP)
+
+	if output.Cidade == "" {
+		w.WriteHeader(http.StatusNotFound)
+		return
+	}
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusUnprocessableEntity)

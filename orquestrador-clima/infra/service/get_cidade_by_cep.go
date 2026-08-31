@@ -33,7 +33,7 @@ func NewCidadeService(baseURL string) *CEPClient {
 func (v *CEPClient) GetCidadeByCep(contexto context.Context, cep string) <-chan CidadeResult {
 	channelResultado := make(chan CidadeResult, 1)
 
-	tr := otel.Tracer("orquestrador-clima-usecase")
+	tr := otel.Tracer("orquestrador-clima-service")
 	contexto, span := tr.Start(contexto, "GetCidadeByCep")
 
 	defer span.End()

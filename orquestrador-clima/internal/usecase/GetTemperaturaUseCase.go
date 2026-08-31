@@ -13,7 +13,6 @@ type CEPProvedor interface {
 	GetCidadeByCep(ctx context.Context, cep string) <-chan service.CidadeResult
 }
 
-// 👇 MUDANÇA 1: Adicionamos o 'ctx context.Context' aqui na interface
 type TemperaturaProvedor interface {
 	GetTemperaturaByCidade(ctx context.Context, cidade string) <-chan service.TemperaturaResultado
 }
