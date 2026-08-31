@@ -36,3 +36,37 @@ Na interface, clique em **"Run Query"** para listar os rastreios realizados e vi
 3. Na raiz do projeto, construa as imagens e suba a infraestrutura completa utilizando o Docker:
    ```bash
    docker compose up -d --build
+
+📬 Exemplo de Chamada da API
+1. Sucesso (200 OK)
+Requisição:
+
+PowerShell
+irm -Method Post -Uri "http://localhost:8080/temperatura" -Headers @{ "Content-Type" = "application/json" } -Body '{"cep": "01001000"}'
+Resposta:
+
+JSON
+{
+  "city": "Sao Paulo",
+  "temp_C": 20.5,
+  "temp_F": 68.9,
+  "temp_K": 293.65
+}
+2. CEP Inexistente (404 Not Found)
+Requisição:
+
+PowerShell
+irm -Method Post -Uri "http://localhost:8080/temperatura" -Headers @{ "Content-Type" = "application/json" } -Body '{"cep": "00000000"}'
+Resposta:
+
+Plaintext
+can not find zipcode
+3. CEP Inválido (422 Unprocessable Entity)
+Requisição:
+
+PowerShell
+irm -Method Post -Uri "http://localhost:8080/temperatura" -Headers @{ "Content-Type" = "application/json" } -Body '{"cep": "0000000"}'
+Resposta:
+
+Plaintext
+invalid zipcode

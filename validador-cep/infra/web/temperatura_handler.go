@@ -40,14 +40,14 @@ func (h *TemperaturaHandler) HandleTemperatura(w http.ResponseWriter, r *http.Re
 	}
 
 	if len(input.CEP) != 8 {
-		w.WriteHeader(http.StatusUnprocessableEntity)
+		http.Error(w, "invalid zip code", http.StatusUnprocessableEntity)
 		return
 	}
 
 	output, err := h.UseCase.GetTemperaturaUseCase(ctx, input.CEP)
 
 	if output.Cidade == "" {
-		w.WriteHeader(http.StatusNotFound)
+		http.Error(w, "cannot find zip code", http.StatusNotFound)
 		return
 	}
 
